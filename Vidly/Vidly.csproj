@@ -20,6 +20,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -271,6 +273,10 @@
     <Compile Include="Migrations\201605020226564_AddNumberAvailableToMovie.cs" />
     <Compile Include="Migrations\201605020226564_AddNumberAvailableToMovie.Designer.cs">
       <DependentUpon>201605020226564_AddNumberAvailableToMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003141044309_RemoveNumberAvailable.cs" />
+    <Compile Include="Migrations\202003141044309_RemoveNumberAvailable.Designer.cs">
+      <DependentUpon>202003141044309_RemoveNumberAvailable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -608,6 +614,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605020226564_AddNumberAvailableToMovie.resx">
       <DependentUpon>201605020226564_AddNumberAvailableToMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003141044309_RemoveNumberAvailable.resx">
+      <DependentUpon>202003141044309_RemoveNumberAvailable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

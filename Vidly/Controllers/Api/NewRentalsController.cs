@@ -26,10 +26,7 @@ namespace Vidly.Controllers.Api
 
             foreach (var movie in movies)
             {
-                if (movie.NumberAvailable == 0)
-                    return BadRequest("Movie is not available.");
-
-                movie.NumberAvailable--;
+                // TODO - add bad request error when number of movies available is 0
 
                 var rental = new Rental
                 {
