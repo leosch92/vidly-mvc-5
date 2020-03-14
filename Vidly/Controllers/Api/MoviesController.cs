@@ -18,11 +18,15 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
         }
 
-        public IEnumerable<MovieDto> GetMovies(string query = null)
+        public IEnumerable<MovieDto> GetMovies(string query = null, bool onlyAvailable = false)
         {
-            // TODO - add flag to get only available movies
             var moviesQuery = _context.Movies
                 .Include(m => m.Genre);
+
+            if (onlyAvailable)
+            {
+                moviesQuery = GetOnlyAvailableMovies(moviesQuery);
+            }
 
             if (!String.IsNullOrWhiteSpace(query))
                 moviesQuery = moviesQuery.Where(m => m.Name.Contains(query));
@@ -30,6 +34,35 @@ namespace Vidly.Controllers.Api
             return moviesQuery
                 .ToList()
                 .Select(Mapper.Map<Movie, MovieDto>);
+        }
+
+        private IQueryable<Movie> GetOnlyAvailableMovies(IQueryable<Movie> query)
+        {
+            var numberAvailablePerMovie = GetNumberAvailablePerMovies(query);
+            return numberAvailablePerMovie
+                .Where(x => x.NumberAvailable > 0)
+                .Select(x => x.Movie);
+        }
+
+        private IQueryable<NumberRentedPerMovie> GetNumberRentedPerMovie(IQueryable<Movie> query)
+        {
+            return query
+                .GroupJoin(
+                    _context.Rentals,
+                    m => m.Id,
+                    r => r.Movie.Id,
+                    (m, r) => new NumberRentedPerMovie { Movie = m, NumberRented = r.DefaultIfEmpty().Count()}
+                );
+        }
+
+        private IQueryable<NumberAvailablePerMovie> GetNumberAvailablePerMovies(IQueryable<Movie> query)
+        {
+            return GetNumberRentedPerMovie(query)
+                .Select(x => new NumberAvailablePerMovie
+                {
+                    Movie = x.Movie,
+                    NumberAvailable = x.Movie.NumberInStock - x.NumberRented
+                });
         }
 
         public IHttpActionResult GetMovie(int id)

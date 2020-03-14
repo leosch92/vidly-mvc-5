@@ -278,6 +278,10 @@
     <Compile Include="Migrations\202003141044309_RemoveNumberAvailable.Designer.cs">
       <DependentUpon>202003141044309_RemoveNumberAvailable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003141108106_AddGenreDrama.cs" />
+    <Compile Include="Migrations\202003141108106_AddGenreDrama.Designer.cs">
+      <DependentUpon>202003141108106_AddGenreDrama.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -288,6 +292,8 @@
     <Compile Include="Models\MembershipType.cs" />
     <Compile Include="Models\Min18YearsIfAMember.cs" />
     <Compile Include="Models\Movie.cs" />
+    <Compile Include="Models\NumberAvailablePerMovie.cs" />
+    <Compile Include="Models\NumberRentedPerMovie.cs" />
     <Compile Include="Models\Rental.cs" />
     <Compile Include="Models\RoleName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -617,6 +623,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003141044309_RemoveNumberAvailable.resx">
       <DependentUpon>202003141044309_RemoveNumberAvailable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003141108106_AddGenreDrama.resx">
+      <DependentUpon>202003141108106_AddGenreDrama.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
