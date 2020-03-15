@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Vidly.DAL;
@@ -18,6 +19,12 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
             _moviesDal = new MoviesDal();
             _rentalsDal = new RentalsDal();
+        }
+
+        [HttpGet]
+        public List<Rental> GetRentals()
+        {
+            return _rentalsDal.GetWithIncludes();
         }
 
         [HttpPost]

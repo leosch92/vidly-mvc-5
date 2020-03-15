@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Vidly.Dtos;
@@ -14,6 +15,17 @@ namespace Vidly.DAL
         public RentalsDal()
         {
             _moviesDal = new MoviesDal();
+        }
+
+        public List<Rental> GetWithIncludes()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                return context.Rentals
+                    .Include(r => r.Movie)
+                    .Include(r => r.Customer)
+                    .ToList();
+            }
         }
 
         public bool CreateRental(NewRentalDto dto)

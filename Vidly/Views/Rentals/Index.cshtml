@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Rentals";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rentals</h2>
+<p>
+    @Html.ActionLink("New Rental", "New", "Rentals", null, new { @class = "btn btn-primary" })
+</p>
+
+
+<table id="rentals" class="table table-bordered table-hover">
+    <thead>
+    <th>Movie</th>
+    <th>Customer</th>
+    <th>Date Rented</th>
+    </thead>
+    <tbody></tbody>
+</table>
+
+@section scripts {
+    @Scripts.Render("~/bundles/rentals")
+}

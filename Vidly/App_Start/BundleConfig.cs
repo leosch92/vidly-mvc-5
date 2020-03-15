@@ -33,6 +33,11 @@ namespace Vidly
                       "~/content/typeahead.css",
                       "~/content/toastr.css",
                       "~/Content/site.css"));
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/rentals")
+                    .Include("~/Scripts/Rentals/rentals.js")
+            );
         }
     }
 }
