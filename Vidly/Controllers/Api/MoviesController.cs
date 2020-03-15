@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
+using Vidly.DAL;
 using Vidly.Dtos;
 using Vidly.Models;
 
@@ -12,57 +13,18 @@ namespace Vidly.Controllers.Api
     public class MoviesController : ApiController
     {
         private ApplicationDbContext _context;
+        private MoviesDal _dal;
 
         public MoviesController()
         {
             _context = new ApplicationDbContext();
+            _dal = new MoviesDal();
         }
 
         public IEnumerable<MovieDto> GetMovies(string query = null, bool onlyAvailable = false)
         {
-            var moviesQuery = _context.Movies
-                .Include(m => m.Genre);
-
-            if (onlyAvailable)
-            {
-                moviesQuery = GetOnlyAvailableMovies(moviesQuery);
-            }
-
-            if (!String.IsNullOrWhiteSpace(query))
-                moviesQuery = moviesQuery.Where(m => m.Name.Contains(query));
-
-            return moviesQuery
-                .ToList()
+            return _dal.GetMoviesWithGenres(query, onlyAvailable)
                 .Select(Mapper.Map<Movie, MovieDto>);
-        }
-
-        private IQueryable<Movie> GetOnlyAvailableMovies(IQueryable<Movie> query)
-        {
-            var numberAvailablePerMovie = GetNumberAvailablePerMovies(query);
-            return numberAvailablePerMovie
-                .Where(x => x.NumberAvailable > 0)
-                .Select(x => x.Movie);
-        }
-
-        private IQueryable<NumberRentedPerMovie> GetNumberRentedPerMovie(IQueryable<Movie> query)
-        {
-            return query
-                .GroupJoin(
-                    _context.Rentals,
-                    m => m.Id,
-                    r => r.Movie.Id,
-                    (m, r) => new NumberRentedPerMovie { Movie = m, NumberRented = r.DefaultIfEmpty().Count()}
-                );
-        }
-
-        private IQueryable<NumberAvailablePerMovie> GetNumberAvailablePerMovies(IQueryable<Movie> query)
-        {
-            return GetNumberRentedPerMovie(query)
-                .Select(x => new NumberAvailablePerMovie
-                {
-                    Movie = x.Movie,
-                    NumberAvailable = x.Movie.NumberInStock - x.NumberRented
-                });
         }
 
         public IHttpActionResult GetMovie(int id)
