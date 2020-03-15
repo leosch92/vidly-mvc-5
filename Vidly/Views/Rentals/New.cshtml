@@ -36,7 +36,7 @@
         $(document).ready(function () {
 
             var vm = {
-                movieIds: []
+                moviesIds: []
             };
 
             var customers = new Bloodhound({
@@ -63,7 +63,7 @@
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 remote: {
-                    url: '/api/movies?query=%QUERY',
+                    url: '/api/movies?query=%QUERY&onlyAvailable=true',
                     wildcard: '%QUERY'
                 }
             });
@@ -80,7 +80,7 @@
 
                 $("#movie").typeahead("val", "");
 
-                vm.movieIds.push(movie.id);
+                vm.moviesIds.push(movie.id);
             });
 
             $.validator.addMethod("validCustomer", function () {
@@ -88,13 +88,13 @@
             }, "Please select a valid customer.");
 
             $.validator.addMethod("atLeastOneMovie", function () {
-                return vm.movieIds.length > 0;
+                return vm.moviesIds.length > 0;
             }, "Please select at least one movie.");
 
             var validator = $("#newRental").validate({
                 submitHandler: function () {
                     $.ajax({
-                        url: "/api/newRentals",
+                        url: "/api/rentals",
                         method: "post",
                         data: vm
                     })
@@ -105,7 +105,7 @@
                         $("#movie").typeahead("val", "");
                         $("#movies").empty();
 
-                        vm = { movieIds: [] };
+                        vm = { moviesIds: [] };
 
                         validator.resetForm();
                     })
