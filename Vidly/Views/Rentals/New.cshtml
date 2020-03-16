@@ -76,6 +76,11 @@
                 display: 'name',
                 source: movies
             }).on("typeahead:select", function (e, movie) {
+                if (vm.moviesIds.includes(movie.id)) {
+                    toastr.warning("Movie already selected for rental.");
+                    return;
+                }
+
                 $("#movies").append("<li class='list-group-item'>" + movie.name + "</li>");
 
                 $("#movie").typeahead("val", "");
