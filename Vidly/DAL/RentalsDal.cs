@@ -42,17 +42,8 @@ namespace Vidly.DAL
            return query.ToList();
         }
 
-        public bool CreateRental(NewRentalDto dto)
+        public void CreateRental(Customer customer, List<Movie> movies)
         {
-            var customer = _context.Customers.Single(c => c.Id == dto.CustomerId);
-
-            var movies = _moviesDal.GetMoviesByIds(dto.MoviesIds, true).ToList();
-
-            if (movies.Count() != dto.MoviesIds.Count())
-            {
-                return false;
-            }
-
             foreach (var movie in movies)
             {
                 var rental = new Rental
@@ -66,8 +57,6 @@ namespace Vidly.DAL
             }
 
             _context.SaveChanges();
-
-            return true;
             
         }
 

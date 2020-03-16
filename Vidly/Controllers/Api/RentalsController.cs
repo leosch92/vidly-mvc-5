@@ -11,12 +11,16 @@ namespace Vidly.Controllers.Api
     public class RentalsController : ApiController
     {
         private RentalsDal _rentalsDal;
+        private CustomersDal _customersDal;
+        private MoviesDal _moviesDal;
         private ApplicationDbContext _context;
 
         public RentalsController()
         {
             _context = new ApplicationDbContext();
             _rentalsDal = new RentalsDal(_context);
+            _customersDal = new CustomersDal(_context);
+            _moviesDal = new MoviesDal(_context);
         }
 
         [HttpGet]
@@ -28,13 +32,11 @@ namespace Vidly.Controllers.Api
         [HttpPost]
         public IHttpActionResult CreateNewRentals(NewRentalDto newRental)
         {
-            var success = _rentalsDal.CreateRental(newRental);
+            var customer = _customersDal.GetCustomer(newRental.CustomerId);
+            var movies = _moviesDal.GetMoviesByIds(newRental.MoviesIds, true).ToList();
 
-            if (!success)
-            {
-                return BadRequest("One or more movies are unavailable. None of the rentals were registered.");
-            }
-
+            _rentalsDal.CreateRental(customer, movies);
+            
             return Ok();
         }
 

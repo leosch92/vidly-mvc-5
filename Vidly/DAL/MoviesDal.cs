@@ -16,11 +16,12 @@ namespace Vidly.DAL
             _context = context;
         }
 
-        public IQueryable<Movie> GetMoviesByIds(List<int> ids, bool onlyAvailable)
+        public List<Movie> GetMoviesByIds(List<int> ids, bool onlyAvailable)
         {
             var query = GetMoviesByAvailability(onlyAvailable);
             return query
-                .Where(m => ids.Contains(m.Id));
+                .Where(m => ids.Contains(m.Id))
+                .ToList();
         }
 
         public List<Movie> GetMoviesWithGenres(string query, bool onlyAvailable)

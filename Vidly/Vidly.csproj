@@ -205,6 +205,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="Controllers\RentalsController.cs" />
+    <Compile Include="DAL\CustomersDal.cs" />
     <Compile Include="DAL\MoviesDal.cs" />
     <Compile Include="DAL\RentalsDal.cs" />
     <Compile Include="Dtos\CustomerDto.cs" />
