@@ -15,6 +15,8 @@ namespace Vidly.Controllers.Api
         private MoviesDal _moviesDal;
         private ApplicationDbContext _context;
 
+        private readonly int _maxActiveRentalsPerCustomer = 3;
+
         public RentalsController()
         {
             _context = new ApplicationDbContext();
@@ -34,6 +36,15 @@ namespace Vidly.Controllers.Api
         {
             var customer = _customersDal.GetCustomer(newRental.CustomerId);
             var movies = _moviesDal.GetMoviesByIds(newRental.MoviesIds, true).ToList();
+            var activeRentalsCount = _rentalsDal.CountPerCustomer(customer.Id);
+
+            var totalRentalsCount = activeRentalsCount + movies.Count();
+
+            if (totalRentalsCount > _maxActiveRentalsPerCustomer)
+            {
+                return BadRequest(
+                    $"New rentals would go over the limit of {_maxActiveRentalsPerCustomer} total rentals.");
+            }
 
             _rentalsDal.CreateRental(customer, movies);
             

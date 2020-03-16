@@ -114,8 +114,8 @@
 
                         validator.resetForm();
                     })
-                    .fail(function () {
-                        toastr.error("Something unexpected happened.");
+                    .fail(function (response) {
+                        toastr.error(response.responseJSON.message);
                     });
 
                     return false;

@@ -66,5 +66,10 @@ namespace Vidly.DAL
             rental.DateReturned = DateTime.Now;
             _context.SaveChanges();
         }
+
+        public int CountPerCustomer(int customerId)
+        {
+            return _context.Rentals.Count(r => r.Customer.Id == customerId);
+        }
     }
 }
