@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Vidly.Dtos;
 using Vidly.Models;
+using Vidly.ViewModels;
 
 namespace Vidly.App_Start
 {
@@ -14,6 +15,8 @@ namespace Vidly.App_Start
             Mapper.CreateMap<MembershipType, MembershipTypeDto>();
             Mapper.CreateMap<Genre, GenreDto>();
 
+            // Domain to View Model
+            Mapper.CreateMap<Customer, CustomerFormViewModel>();
 
             // Dto to Domain
             Mapper.CreateMap<CustomerDto, Customer>()
@@ -21,6 +24,9 @@ namespace Vidly.App_Start
 
             Mapper.CreateMap<MovieDto, Movie>()
                 .ForMember(c => c.Id, opt => opt.Ignore());
+
+            // View Model to Domain
+            Mapper.CreateMap<CustomerFormViewModel, Customer>();
         }
     }
 }

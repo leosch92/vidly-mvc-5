@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using Vidly.Models;
 using Vidly.ViewModels;
 
@@ -25,7 +26,6 @@ namespace Vidly.Controllers
             var membershipTypes = _context.MembershipTypes.ToList();
             var viewModel = new CustomerFormViewModel
             {
-                Customer = new Customer(),
                 MembershipTypes = membershipTypes
             };
 
@@ -38,11 +38,8 @@ namespace Vidly.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var viewModel = new CustomerFormViewModel
-                {
-                    Customer = customer,
-                    MembershipTypes = _context.MembershipTypes.ToList()
-                };
+                var viewModel = Mapper.Map<Customer, CustomerFormViewModel>(customer);
+                viewModel.MembershipTypes = _context.MembershipTypes.ToList();
 
                 return View("CustomerForm", viewModel);
             }
@@ -56,6 +53,7 @@ namespace Vidly.Controllers
                 customerInDb.Birthdate = customer.Birthdate;
                 customerInDb.MembershipTypeId = customer.MembershipTypeId;
                 customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+                customerInDb.DelinquentOnPayment = customer.DelinquentOnPayment;
             }
 
             _context.SaveChanges();
@@ -85,11 +83,9 @@ namespace Vidly.Controllers
             if (customer == null)
                 return HttpNotFound();
 
-            var viewModel = new CustomerFormViewModel
-            {
-                Customer = customer,
-                MembershipTypes = _context.MembershipTypes.ToList()
-            };
+            var viewModel = Mapper.Map<Customer, CustomerFormViewModel>(customer);
+            viewModel.MembershipTypes = _context.MembershipTypes.ToList();
+            viewModel.EditMode = true;
 
             return View("CustomerForm", viewModel);
         }
