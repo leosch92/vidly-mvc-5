@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http;
+using System.Linq;
 using Vidly.DAL;
 using Vidly.Dtos;
 using Vidly.Models;
@@ -10,21 +10,19 @@ namespace Vidly.Controllers.Api
 {
     public class RentalsController : ApiController
     {
-        private ApplicationDbContext _context;
-        private MoviesDal _moviesDal;
         private RentalsDal _rentalsDal;
+        private ApplicationDbContext _context;
 
         public RentalsController()
         {
             _context = new ApplicationDbContext();
-            _moviesDal = new MoviesDal();
-            _rentalsDal = new RentalsDal();
+            _rentalsDal = new RentalsDal(_context);
         }
 
         [HttpGet]
-        public List<Rental> GetRentals()
+        public List<Rental> GetRentals(bool includeReturned = true)
         {
-            return _rentalsDal.GetWithIncludes();
+            return _rentalsDal.GetWithIncludes(includeReturned);
         }
 
         [HttpPost]
@@ -37,6 +35,14 @@ namespace Vidly.Controllers.Api
                 return BadRequest("One or more movies are unavailable. None of the rentals were registered.");
             }
 
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("api/rentals/return/{id}")]
+        public IHttpActionResult Return(int id)
+        {
+            _rentalsDal.Return(id);
             return Ok();
         }
     }

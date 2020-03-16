@@ -18,12 +18,11 @@ namespace Vidly.Controllers.Api
         public MoviesController()
         {
             _context = new ApplicationDbContext();
-            _dal = new MoviesDal();
+            _dal = new MoviesDal(_context);
         }
 
         public IEnumerable<MovieDto> GetMovies(string query = null, bool onlyAvailable = false)
-        {
-            return _dal.GetMoviesWithGenres(query, onlyAvailable)
+        { return _dal.GetMoviesWithGenres(query, onlyAvailable)
                 .Select(Mapper.Map<Movie, MovieDto>);
         }
 

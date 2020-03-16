@@ -9,23 +9,27 @@ namespace Vidly.DAL
 {
     public class MoviesDal
     {
-        public IQueryable<Movie> GetMoviesByIds(ApplicationDbContext context, List<int> ids, bool onlyAvailable)
+        private ApplicationDbContext _context;
+
+        public MoviesDal(ApplicationDbContext context)
         {
-            var query = GetMoviesByAvailability(context, onlyAvailable);
+            _context = context;
+        }
+
+        public IQueryable<Movie> GetMoviesByIds(List<int> ids, bool onlyAvailable)
+        {
+            var query = GetMoviesByAvailability(onlyAvailable);
             return query
                 .Where(m => ids.Contains(m.Id));
         }
 
         public List<Movie> GetMoviesWithGenres(string query, bool onlyAvailable)
         {
-            using (var context = new ApplicationDbContext())
-            {
-                var moviesQuery = GetMoviesByAvailability(context, onlyAvailable);
-                moviesQuery = FilterMoviesByQuery(query, moviesQuery);
-                return moviesQuery
-                    .Include(m => m.Genre)
-                    .ToList();
-            }
+            var moviesQuery = GetMoviesByAvailability(onlyAvailable);
+            moviesQuery = FilterMoviesByQuery(query, moviesQuery);
+            return moviesQuery
+                .Include(m => m.Genre)
+                .ToList();
         }
 
         private IQueryable<Movie> FilterMoviesByQuery(string query, IQueryable<Movie> moviesQuery)
@@ -35,32 +39,39 @@ namespace Vidly.DAL
             return moviesQuery;
         }
 
-        public IQueryable<Movie> GetMoviesByAvailability(ApplicationDbContext context, bool onlyAvailable)
+        public IQueryable<Movie> GetMoviesByAvailability(bool onlyAvailable)
         {
             if (!onlyAvailable)
             {
-                return context.Movies;
+                return _context.Movies;
             }
-            var numberAvailablePerMovie = GetNumberAvailablePerMovies(context);
+
+            var numberAvailablePerMovie = GetNumberAvailablePerMovies();
             return numberAvailablePerMovie
                 .Where(x => x.NumberAvailable > 0)
                 .Select(x => x.Movie);
         }
 
-        private IQueryable<NumberRentedPerMovie> GetNumberRentedPerMovie(ApplicationDbContext context)
+        private IQueryable<NumberRentedPerMovie> GetNumberRentedPerMovie()
         {
-            return context.Movies
+            return _context.Movies
                 .GroupJoin(
-                    context.Rentals,
+                    _context.Rentals,
                     m => m.Id,
                     r => r.Movie.Id,
-                    (m, r) => new NumberRentedPerMovie { Movie = m, NumberRented = r.DefaultIfEmpty().Count() }
+                    (m, rentals) => new NumberRentedPerMovie
+                    {
+                        Movie = m,
+                        NumberRented = rentals
+                            .DefaultIfEmpty()
+                            .Count(r => r.Movie.Id == m.Id && r.DateReturned == null)
+                    }
                 );
         }
 
-        private IQueryable<NumberAvailablePerMovie> GetNumberAvailablePerMovies(ApplicationDbContext context)
+        private IQueryable<NumberAvailablePerMovie> GetNumberAvailablePerMovies()
         {
-            return GetNumberRentedPerMovie(context)
+            return GetNumberRentedPerMovie()
                 .Select(x => new NumberAvailablePerMovie
                 {
                     Movie = x.Movie,

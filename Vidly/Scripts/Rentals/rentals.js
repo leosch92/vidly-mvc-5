@@ -8,7 +8,7 @@
     function initTable() {
         table = $("#rentals").DataTable({
             ajax: {
-                url: "/api/rentals",
+                url: "/api/rentals?includeReturned=false",
                 dataSrc: ""
             },
             columns: [
@@ -20,14 +20,37 @@
                 },
                 {
                     data: "dateRented"
+                },
+                {
+                    data: "id",
+                    render: function (data) {
+                        return "<button class='btn-link js-return' data-rental-id=" + data + ">Return</button>";
+                    },
+                    orderable: false
                 }
-                //{
-                //    data: "id",
-                //    render: function (data) {
-                //        return "<button class='btn-link js-delete' data-customer-id=" + data + ">Delete</button>";
-                //    }
-                //}
             ]
+        });
+
+        initReturn();
+    }
+
+    function initReturn() {
+        $("#rentals").on("click", ".js-return", function () {
+            debugger;
+            var button = $(this);
+
+            bootbox.confirm("Are you sure you want to return this rental?", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "/api/rentals/return/" + button.attr("data-rental-id"),
+                        method: "PUT",
+                        success: function () {
+                            table.row(button.parents("tr")).remove().draw();
+                            toastr.success("Movie has successfully returned!")
+                        }
+                    });
+                }
+            });
         });
     }
 
@@ -38,21 +61,4 @@
 
 $(document).ready(function () {
     Rentals.init();
-
-
-    //$("#customers").on("click", ".js-delete", function () {
-    //    var button = $(this);
-
-    //    bootbox.confirm("Are you sure you want to delete this customer?", function (result) {
-    //        if (result) {
-    //            $.ajax({
-    //                url: "/api/customers/" + button.attr("data-customer-id"),
-    //                method: "DELETE",
-    //                success: function () {
-    //                    table.row(button.parents("tr")).remove().draw();
-    //                }
-    //            });
-    //        }
-    //    });
-    //});
 });
