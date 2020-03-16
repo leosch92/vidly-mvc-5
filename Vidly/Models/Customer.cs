@@ -21,5 +21,8 @@ namespace Vidly.Models
         [Display(Name = "Date of Birth")]
         [Min18YearsIfAMember]
         public DateTime? Birthdate { get; set; }
+
+        [Display(Name = "Delinquent on Payment")]
+        public bool DelinquentOnPayment { get; set; }
     }
 }

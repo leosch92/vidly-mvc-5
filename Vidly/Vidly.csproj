@@ -285,6 +285,10 @@
     <Compile Include="Migrations\202003141108106_AddGenreDrama.Designer.cs">
       <DependentUpon>202003141108106_AddGenreDrama.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003161349150_AddDelinquencyToCustomer.cs" />
+    <Compile Include="Migrations\202003161349150_AddDelinquencyToCustomer.Designer.cs">
+      <DependentUpon>202003161349150_AddDelinquencyToCustomer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -632,6 +636,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003141108106_AddGenreDrama.resx">
       <DependentUpon>202003141108106_AddGenreDrama.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003161349150_AddDelinquencyToCustomer.resx">
+      <DependentUpon>202003161349150_AddDelinquencyToCustomer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
